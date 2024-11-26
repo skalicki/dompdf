@@ -997,4 +997,24 @@ class CPDF implements Canvas
     {
         return $this->_pdf->messages;
     }
+
+    /**
+     * Sets the language of the PDF document.
+     *
+     * This method updates the PDF's metadata to include the specified language.
+     * The language code should adhere to BCP 47 standards (e.g., "en-US" for
+     * American English, "de-DE" for German in Germany).
+     *
+     * @param string $lang The language code to set for the PDF (e.g., "en-US", "de-DE").
+     *
+     * @throws Exception if the language code is invalid.
+     */
+    public function set_language($lang)
+    {
+        if (!is_string($lang) || !preg_match('/^[a-z]{2}(-[A-Z]{2})?$/', $lang)) {
+            throw new Exception("Invalid language code provided. Expected format: 'xx-XX'.");
+        }
+
+        $this->_pdf->objects[1]['info']['lang'] = $lang;
+    }
 }

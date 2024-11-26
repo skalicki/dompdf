@@ -730,6 +730,17 @@ class Dompdf
 
         $this->processHtml();
 
+        $htmlNode = $this->dom->documentElement;
+        $lang = 'en-US';
+
+        if ($htmlNode && $htmlNode->hasAttribute('lang')) {
+            $lang = $htmlNode->getAttribute('lang');
+        }
+
+        if ($this->canvas instanceof \Dompdf\Adapter\CPDF) {
+            $this->canvas->set_language($lang);
+        }
+
         $this->css->apply_styles($this->tree);
 
         // @page style rules : size, margins

@@ -615,6 +615,7 @@ class Cpdf
             case 'pages':
             case 'openHere':
             case 'names':
+            case 'lang':
                 $o['info'][$action] = $options;
                 break;
 
@@ -641,6 +642,10 @@ class Cpdf
 
                         case 'pages':
                             $res .= "\n/Pages $v 0 R";
+                            break;
+
+                        case 'lang':
+                            $res .= "\n/Lang ($v)";
                             break;
 
                         case 'viewerPreferences':
