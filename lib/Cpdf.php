@@ -616,6 +616,7 @@ class Cpdf
             case 'openHere':
             case 'names':
             case 'lang':
+            case 'structTreeRoot':
                 $o['info'][$action] = $options;
                 break;
 
@@ -646,6 +647,10 @@ class Cpdf
 
                         case 'lang':
                             $res .= "\n/Lang ($v)";
+                            break;
+
+                        case 'structTreeRoot':
+                            $res .= "\n/StructTreeRoot $v 0 R";
                             break;
 
                         case 'viewerPreferences':
@@ -859,6 +864,40 @@ class Cpdf
                 }
 
                 return $res;
+        }
+
+        return null;
+    }
+
+    protected function o_structTreeRoot($id, $action, $options = '') {
+        if ($action !== 'new') {
+            $o = &$this->objects[$id];
+        }
+
+        switch ($action) {
+            case 'new':
+                $this->objects[$id] = ['t' => 'structTreeRoot', 'info' => []];
+                $this->o_catalog($this->catalogId, 'structTreeRoot', $id);
+//                var_dump($this->objects[$id]);
+//                die();
+                break;
+            case 'k':
+                // Todo: hmmm
+                break;
+            case 'out':
+                $res = "\n$id 0 obj\n<< /Type /StructTreeRoot \n/K [] >>\nendobj";
+
+//              Example of a SourceTreeRoot (minimal)
+//              4 0 obj
+//              << /Type /StructTreeRoot
+//              /K [] >>
+//              endobj
+
+//                var_dump($o);
+//                die();
+
+                return $res;
+                break;
         }
 
         return null;
@@ -3286,6 +3325,9 @@ EOT;
 
         $this->numObj++;
         $this->o_page($this->numObj, 'new');
+
+        $this->numObj++;
+        $this->o_structTreeRoot($this->numObj, 'new');
 
         // need to store the first page id as there is no way to get it to the user during
         // startup
